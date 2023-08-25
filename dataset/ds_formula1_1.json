@@ -1,0 +1,24 @@
+{
+	"name": "ds_formula1_1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blobstorage_output",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "driver_results_join.csv",
+				"folderPath": "formula_output",
+				"container": "output"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

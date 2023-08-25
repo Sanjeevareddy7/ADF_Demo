@@ -1,0 +1,117 @@
+{
+	"name": "df_formula_1",
+	"properties": {
+		"folder": {
+			"name": "Formula_Dataflows"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_drivers",
+						"type": "DatasetReference"
+					},
+					"name": "drivers"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_results",
+						"type": "DatasetReference"
+					},
+					"name": "results"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_formula1_1",
+						"type": "DatasetReference"
+					},
+					"name": "DriverResultsOutput"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DriversResultsJoin"
+				},
+				{
+					"name": "selectingRequiredColumns"
+				},
+				{
+					"name": "derivingFullNameCOlumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          driverId as integer,",
+				"          driverRef as string,",
+				"          number as integer,",
+				"          code as string,",
+				"          forename as string,",
+				"          surname as string,",
+				"          dob as string,",
+				"          nationality as string,",
+				"          url as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> drivers",
+				"source(output(",
+				"          resultId as integer,",
+				"          raceId as integer,",
+				"          driverId as integer,",
+				"          constructorId as string,",
+				"          number as integer,",
+				"          grid as string,",
+				"          position as string,",
+				"          positionText as string,",
+				"          positionOrder as string,",
+				"          points as integer,",
+				"          laps as string,",
+				"          time as timestamp,",
+				"          milliseconds as timestamp,",
+				"          fastestLap as string,",
+				"          rank as string,",
+				"          fastestLapTime as string,",
+				"          fastestLapSpeed as string,",
+				"          statusId as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> results",
+				"drivers, results join(drivers@driverId == results@driverId,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> DriversResultsJoin",
+				"DriversResultsJoin select(mapColumn(",
+				"          driverId = drivers@driverId,",
+				"          forename,",
+				"          surname,",
+				"          nationality,",
+				"          raceId,",
+				"          constructorId,",
+				"          grid,",
+				"          position,",
+				"          points,",
+				"          laps,",
+				"          time,",
+				"          milliseconds,",
+				"          fastestLap,",
+				"          rank,",
+				"          fastestLapTime,",
+				"          fastestLapSpeed,",
+				"          statusId",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectingRequiredColumns",
+				"selectingRequiredColumns derive(Driver_Name = concatWS(\" \", forename, surname)) ~> derivingFullNameCOlumn",
+				"derivingFullNameCOlumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DriverResultsOutput"
+			]
+		}
+	}
+}

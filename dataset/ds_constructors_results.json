@@ -1,0 +1,47 @@
+{
+	"name": "ds_constructors_results",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_storage_formula1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Formula1"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "constructorResults.csv",
+				"container": "formula1"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "constructorResultsId",
+				"type": "String"
+			},
+			{
+				"name": "raceId",
+				"type": "String"
+			},
+			{
+				"name": "constructorId",
+				"type": "String"
+			},
+			{
+				"name": "points",
+				"type": "String"
+			},
+			{
+				"name": "status",
+				"type": "String"
+			}
+		]
+	}
+}
