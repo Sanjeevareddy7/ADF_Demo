@@ -1,0 +1,9 @@
+{
+	"name": "adfdemopracitice",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "ae4f9c60-a973-40b2-b097-77c66a56790d",
+		"tenantId": "ac708fa0-4913-4c7d-b586-a075d1a4efa7"
+	}
+}

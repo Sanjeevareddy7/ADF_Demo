@@ -1,0 +1,57 @@
+{
+	"name": "ds_employees",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blobstorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "employees.csv",
+				"container": "inputdata"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "employeeNumber",
+				"type": "String"
+			},
+			{
+				"name": "lastName",
+				"type": "String"
+			},
+			{
+				"name": "firstName",
+				"type": "String"
+			},
+			{
+				"name": "extension",
+				"type": "String"
+			},
+			{
+				"name": "email",
+				"type": "String"
+			},
+			{
+				"name": "officeCode",
+				"type": "String"
+			},
+			{
+				"name": "reportsTo",
+				"type": "String"
+			},
+			{
+				"name": "jobTitle",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

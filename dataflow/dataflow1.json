@@ -1,0 +1,116 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "offices",
+						"type": "DatasetReference"
+					},
+					"name": "Offices"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_employees",
+						"type": "DatasetReference"
+					},
+					"name": "Employees"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_emp_offi_output",
+						"type": "DatasetReference"
+					},
+					"name": "EmpSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinofficeemployees"
+				},
+				{
+					"name": "selectRFequiredColumns"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          officeCode as string,",
+				"          city as string,",
+				"          phone as string,",
+				"          addressLine1 as string,",
+				"          addressLine2 as string,",
+				"          state as string,",
+				"          country as string,",
+				"          postalCode as string,",
+				"          territory as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Offices",
+				"source(output(",
+				"          employeeNumber as string,",
+				"          lastName as string,",
+				"          firstName as string,",
+				"          extension as string,",
+				"          email as string,",
+				"          officeCode as string,",
+				"          reportsTo as string,",
+				"          jobTitle as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employees",
+				"Offices, Employees join(Offices@officeCode == Employees@officeCode,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinofficeemployees",
+				"joinofficeemployees select(mapColumn(",
+				"          officeCode = Offices@officeCode,",
+				"          city,",
+				"          phone,",
+				"          state,",
+				"          country,",
+				"          postalCode,",
+				"          employeeNumber,",
+				"          lastName,",
+				"          firstName,",
+				"          reportsTo,",
+				"          jobTitle",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectRFequiredColumns",
+				"selectRFequiredColumns derive({Full Name} = concatWS(' ',firstName,lastName)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          employeeNumber,",
+				"          {Full Name},",
+				"          officeCode,",
+				"          lastName,",
+				"          firstName,",
+				"          reportsTo,",
+				"          jobTitle,",
+				"          city,",
+				"          state,",
+				"          country,",
+				"          postalCode",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> EmpSink"
+			]
+		}
+	}
+}
